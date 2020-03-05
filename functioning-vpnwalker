@@ -1,6 +1,6 @@
-<domain type='kvm' id='1'>
-  <name>Cloudron</name>
-  <uuid>75d0082b-ec87-4eca-bea2-6ce79e9b6313</uuid>
+<domain type='kvm' id='17'>
+  <name>vpnwalker</name>
+  <uuid>7236d324-37c8-443c-a983-de90fb33b494</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://ubuntu.com/ubuntu/18.04"/>
@@ -8,29 +8,19 @@
   </metadata>
   <memory unit='KiB'>8388608</memory>
   <currentMemory unit='KiB'>8388608</currentMemory>
-  <memoryBacking>
-    <hugepages/>
-  </memoryBacking>
-  <vcpu placement='static' cpuset='12-15,28-31'>8</vcpu>
+  <vcpu placement='static' cpuset='8,24'>2</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='12'/>
-    <vcpupin vcpu='1' cpuset='28'/>
-    <vcpupin vcpu='2' cpuset='13'/>
-    <vcpupin vcpu='3' cpuset='29'/>
-    <vcpupin vcpu='4' cpuset='14'/>
-    <vcpupin vcpu='5' cpuset='30'/>
-    <vcpupin vcpu='6' cpuset='15'/>
-    <vcpupin vcpu='7' cpuset='31'/>
+    <vcpupin vcpu='0' cpuset='8'/>
+    <vcpupin vcpu='1' cpuset='24'/>
+    <emulatorpin cpuset='8,24'/>
   </cputune>
-  <numatune>
-    <memory mode='preferred' nodeset='1'/>
-  </numatune>
   <resource>
     <partition>/machine</partition>
   </resource>
   <os>
     <type arch='x86_64' machine='pc-q35-4.1'>hvm</type>
-    <boot dev='hd'/>
+    <loader readonly='yes' type='pflash'>/usr/share/ovmf/x64/OVMF_CODE.fd</loader>
+    <nvram>/usr/share/ovmf/x64/OVMF_VARS.fd</nvram>
   </os>
   <features>
     <acpi/>
@@ -45,7 +35,6 @@
   <cpu mode='custom' match='exact' check='full'>
     <model fallback='forbid'>EPYC-IBPB</model>
     <vendor>AMD</vendor>
-    <topology sockets='1' cores='4' threads='2'/>
     <feature policy='require' name='tsc-deadline'/>
     <feature policy='require' name='hypervisor'/>
     <feature policy='require' name='tsc_adjust'/>
@@ -63,9 +52,8 @@
     <feature policy='require' name='topoext'/>
   </cpu>
   <clock offset='localtime'>
-    <timer name='rtc' tickpolicy='catchup' track='guest'/>
-    <timer name='pit' tickpolicy='delay'/>
-    <timer name='hpet' present='no'/>
+    <timer name='hpet' present='yes'/>
+    <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
   <on_reboot>restart</on_reboot>
@@ -76,11 +64,12 @@
   </pm>
   <devices>
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
-    <disk type='block' device='disk'>
-      <driver name='qemu' type='raw' cache='none' io='native'/>
-      <source dev='/dev/disk/by-id/ata-Samsung_SSD_850_EVO_500GB_S2RANXAH339415H' index='1'/>
+    <disk type='file' device='disk'>
+      <driver name='qemu' type='raw'/>
+      <source file='/blackhole/vms/vpnwalker.raw' index='1'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
+      <boot order='1'/>
       <alias name='virtio-disk0'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </disk>
@@ -156,28 +145,28 @@
       <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
-    <interface type='direct'>
-      <mac address='52:54:00:82:bd:00'/>
-      <source dev='enp3s0' mode='bridge'/>
-      <target dev='macvtap0'/>
+    <interface type='network'>
+      <mac address='52:54:00:82:bd:01'/>
+      <source network='default' portid='493bd7cf-b102-45dc-b669-667282db5ed5' bridge='virbr0'/>
+      <target dev='vnet0'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/0'/>
+      <source path='/dev/pts/9'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/0'>
-      <source path='/dev/pts/0'/>
+    <console type='pty' tty='/dev/pts/9'>
+      <source path='/dev/pts/9'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-Cloudron/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-17-vpnwalker/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
@@ -197,12 +186,14 @@
     <input type='keyboard' bus='ps2'>
       <alias name='input2'/>
     </input>
-    <graphics type='spice' port='5900' autoport='yes' listen='127.0.0.1'>
-      <listen type='address' address='127.0.0.1'/>
-      <image compression='off'/>
+    <graphics type='spice'>
+      <listen type='none'/>
+      <gl enable='yes' rendernode='/dev/dri/renderD128'/>
     </graphics>
     <video>
-      <model type='qxl' ram='65536' vram='65536' vgamem='16384' heads='1' primary='yes'/>
+      <model type='virtio' heads='1' primary='yes'>
+        <acceleration accel3d='yes'/>
+      </model>
       <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </video>
