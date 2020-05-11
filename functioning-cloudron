@@ -1,4 +1,4 @@
-<domain type='kvm' id='2'>
+<domain type='kvm' id='1'>
   <name>Cloudron</name>
   <uuid>75d0082b-ec87-4eca-bea2-6ce79e9b6313</uuid>
   <metadata>
@@ -6,11 +6,8 @@
       <libosinfo:os id="http://ubuntu.com/ubuntu/18.04"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>8388608</memory>
-  <currentMemory unit='KiB'>8388608</currentMemory>
-  <memoryBacking>
-    <hugepages/>
-  </memoryBacking>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
   <vcpu placement='static' cpuset='12-13,28-29'>4</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='12'/>
@@ -45,7 +42,7 @@
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='virt-ssbd'/>
     <feature policy='disable' name='monitor'/>
-    <feature policy='require' name='x2apic'/>
+    <feature policy='disable' name='x2apic'/>
     <feature policy='require' name='hypervisor'/>
     <feature policy='disable' name='svm'/>
   </cpu>
@@ -152,19 +149,19 @@
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/1'/>
+      <source path='/dev/pts/0'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/1'>
-      <source path='/dev/pts/1'/>
+    <console type='pty' tty='/dev/pts/0'>
+      <source path='/dev/pts/0'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-Cloudron/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-Cloudron/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
@@ -201,10 +198,7 @@
       <alias name='redir1'/>
       <address type='usb' bus='0' port='3'/>
     </redirdev>
-    <memballoon model='virtio'>
-      <alias name='balloon0'/>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </memballoon>
+    <memballoon model='none'/>
     <rng model='virtio'>
       <backend model='random'>/dev/urandom</backend>
       <alias name='rng0'/>
@@ -212,8 +206,8 @@
     </rng>
   </devices>
   <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+60511:+60511</label>
-    <imagelabel>+60511:+60511</imagelabel>
+    <label>+1000:+1000</label>
+    <imagelabel>+1000:+1000</imagelabel>
   </seclabel>
 </domain>
 

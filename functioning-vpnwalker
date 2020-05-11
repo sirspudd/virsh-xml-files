@@ -1,4 +1,4 @@
-<domain type='kvm' id='17'>
+<domain type='kvm' id='2'>
   <name>vpnwalker</name>
   <uuid>7236d324-37c8-443c-a983-de90fb33b494</uuid>
   <metadata>
@@ -6,21 +6,24 @@
       <libosinfo:os id="http://ubuntu.com/ubuntu/18.04"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>8388608</memory>
-  <currentMemory unit='KiB'>8388608</currentMemory>
-  <vcpu placement='static' cpuset='8,24'>2</vcpu>
+  <memory unit='KiB'>4194304</memory>
+  <currentMemory unit='KiB'>4194304</currentMemory>
+  <vcpu placement='static' cpuset='7,23'>2</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='8'/>
-    <vcpupin vcpu='1' cpuset='24'/>
-    <emulatorpin cpuset='8,24'/>
+    <vcpupin vcpu='0' cpuset='7'/>
+    <vcpupin vcpu='1' cpuset='23'/>
   </cputune>
+  <numatune>
+    <memory mode='preferred' nodeset='0'/>
+  </numatune>
   <resource>
     <partition>/machine</partition>
   </resource>
   <os>
     <type arch='x86_64' machine='pc-q35-4.1'>hvm</type>
-    <loader readonly='yes' type='pflash'>/usr/share/ovmf/x64/OVMF_CODE.fd</loader>
-    <nvram>/usr/share/ovmf/x64/OVMF_VARS.fd</nvram>
+    <loader readonly='yes' type='pflash'>/usr/share/edk2-ovmf/x64/OVMF_CODE.fd</loader>
+    <nvram>/usr/share/ovmf/x64/vpnwalker.fd</nvram>
+    <boot dev='hd'/>
   </os>
   <features>
     <acpi/>
@@ -66,10 +69,9 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/blackhole/vms/vpnwalker.raw' index='1'/>
+      <source file='/blackhole/img/vpnwalker.raw' index='1'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
-      <boot order='1'/>
       <alias name='virtio-disk0'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </disk>
@@ -147,32 +149,32 @@
     </controller>
     <interface type='network'>
       <mac address='52:54:00:82:bd:01'/>
-      <source network='default' portid='493bd7cf-b102-45dc-b669-667282db5ed5' bridge='virbr0'/>
+      <source network='default' portid='d97df47d-e719-4330-9c1c-d9bd574d499a' bridge='virbr0'/>
       <target dev='vnet0'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/9'/>
+      <source path='/dev/pts/1'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/9'>
-      <source path='/dev/pts/9'/>
+    <console type='pty' tty='/dev/pts/1'>
+      <source path='/dev/pts/1'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-17-vpnwalker/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-vpnwalker/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <channel type='spicevmc'>
-      <target type='virtio' name='com.redhat.spice.0' state='disconnected'/>
+      <target type='virtio' name='com.redhat.spice.0' state='connected'/>
       <alias name='channel1'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
@@ -186,14 +188,16 @@
     <input type='keyboard' bus='ps2'>
       <alias name='input2'/>
     </input>
+    <input type='keyboard' bus='virtio'>
+      <alias name='input3'/>
+      <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
+    </input>
     <graphics type='spice'>
       <listen type='none'/>
       <gl enable='yes' rendernode='/dev/dri/renderD128'/>
     </graphics>
     <video>
-      <model type='virtio' heads='1' primary='yes'>
-        <acceleration accel3d='yes'/>
-      </model>
+      <model type='virtio' heads='1' primary='yes'/>
       <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </video>
@@ -205,10 +209,7 @@
       <alias name='redir1'/>
       <address type='usb' bus='0' port='3'/>
     </redirdev>
-    <memballoon model='virtio'>
-      <alias name='balloon0'/>
-      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
-    </memballoon>
+    <memballoon model='none'/>
     <rng model='virtio'>
       <backend model='random'>/dev/urandom</backend>
       <alias name='rng0'/>
