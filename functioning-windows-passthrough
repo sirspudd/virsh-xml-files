@@ -3,14 +3,12 @@
   <uuid>ffd4dcda-1987-409f-bd4c-5062821b7099</uuid>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
-  <vcpu placement='static' cpuset='8-10,24-26'>6</vcpu>
+  <vcpu placement='static' cpuset='12-13,28-29'>4</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='8'/>
-    <vcpupin vcpu='1' cpuset='24'/>
-    <vcpupin vcpu='2' cpuset='9'/>
-    <vcpupin vcpu='3' cpuset='25'/>
-    <vcpupin vcpu='4' cpuset='10'/>
-    <vcpupin vcpu='5' cpuset='26'/>
+    <vcpupin vcpu='0' cpuset='12'/>
+    <vcpupin vcpu='1' cpuset='28'/>
+    <vcpupin vcpu='2' cpuset='13'/>
+    <vcpupin vcpu='3' cpuset='29'/>
     <emulatorpin cpuset='11,27'/>
   </cputune>
   <numatune>
@@ -34,7 +32,7 @@
   </features>
   <cpu mode='custom' match='exact' check='none'>
     <model fallback='allow'>EPYC</model>
-    <topology sockets='1' dies='1' cores='3' threads='2'/>
+    <topology sockets='1' dies='1' cores='2' threads='2'/>
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='invtsc'/>
   </cpu>
@@ -151,18 +149,6 @@
     </sound>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <source>
-        <address domain='0x0000' bus='0x41' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
-        <address domain='0x0000' bus='0x43' slot='0x00' function='0x0'/>
-      </source>
-      <address type='pci' domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <source>
         <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
@@ -178,6 +164,18 @@
         <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x44' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
+    </hostdev>
+    <hostdev mode='subsystem' type='pci' managed='yes'>
+      <source>
+        <address domain='0x0000' bus='0x42' slot='0x00' function='0x0'/>
+      </source>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </hostdev>
     <memballoon model='none'/>
     <shmem name='looking-glass'>
