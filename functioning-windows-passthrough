@@ -3,16 +3,23 @@
   <uuid>ffd4dcda-1987-409f-bd4c-5062821b7099</uuid>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
-  <vcpu placement='static' cpuset='12-13,28-29'>4</vcpu>
+  <vcpu placement='static' cpuset='12-13,28-29'>8</vcpu>
   <cputune>
     <vcpupin vcpu='0' cpuset='12'/>
     <vcpupin vcpu='1' cpuset='28'/>
     <vcpupin vcpu='2' cpuset='13'/>
     <vcpupin vcpu='3' cpuset='29'/>
+    <vcpupin vcpu='4' cpuset='14'/>
+    <vcpupin vcpu='5' cpuset='30'/>
+    <vcpupin vcpu='6' cpuset='15'/>
+    <vcpupin vcpu='7' cpuset='31'/>
   </cputune>
   <numatune>
     <memory mode='preferred' nodeset='1'/>
   </numatune>
+  <resource>
+    <partition>/machine</partition>
+  </resource>
   <os>
     <type arch='x86_64' machine='pc-q35-4.1'>hvm</type>
     <loader readonly='yes' type='pflash'>/usr/share/edk2-ovmf/x64/OVMF_CODE.fd</loader>
@@ -26,6 +33,9 @@
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='off'/>
+      <stimer state='off'/>
       <vendor_id state='on' value='banana'/>
     </hyperv>
     <kvm>
@@ -34,14 +44,11 @@
     <vmport state='off'/>
   </features>
   <cpu mode='host-model' check='partial'>
+    <topology sockets='1' dies='1' cores='4' threads='2'/>
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='invtsc'/>
   </cpu>
-  <clock offset='localtime'>
-    <timer name='rtc' present='no' tickpolicy='catchup'/>
-    <timer name='pit' present='no' tickpolicy='delay'/>
-    <timer name='hpet' present='no'/>
-    <timer name='kvmclock' present='no'/>
+  <clock offset='utc'>
     <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -155,30 +162,35 @@
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1b' function='0x0'/>
     </sound>
     <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0x0d' slot='0x00' function='0x1'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0x44' slot='0x00' function='0x0'/>
       </source>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
+      <driver name='vfio'/>
       <source>
         <address domain='0x0000' bus='0x42' slot='0x00' function='0x0'/>
       </source>
@@ -186,6 +198,7 @@
     </hostdev>
     <memballoon model='none'/>
   </devices>
+  <seclabel type='dynamic' model='dac' relabel='yes'/>
   <qemu:commandline>
     <qemu:arg value='-object'/>
     <qemu:arg value='input-linux,id=mouse1,evdev=/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse'/>
