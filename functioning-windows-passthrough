@@ -3,19 +3,19 @@
   <uuid>ffd4dcda-1987-409f-bd4c-5062821b7099</uuid>
   <memory unit='KiB'>16777216</memory>
   <currentMemory unit='KiB'>16777216</currentMemory>
-  <vcpu placement='static' cpuset='12-13,28-29'>8</vcpu>
+  <vcpu placement='static' cpuset='4-7,20-23'>8</vcpu>
   <cputune>
-    <vcpupin vcpu='0' cpuset='12'/>
-    <vcpupin vcpu='1' cpuset='28'/>
-    <vcpupin vcpu='2' cpuset='13'/>
-    <vcpupin vcpu='3' cpuset='29'/>
-    <vcpupin vcpu='4' cpuset='14'/>
-    <vcpupin vcpu='5' cpuset='30'/>
-    <vcpupin vcpu='6' cpuset='15'/>
-    <vcpupin vcpu='7' cpuset='31'/>
+    <vcpupin vcpu='0' cpuset='4'/>
+    <vcpupin vcpu='1' cpuset='20'/>
+    <vcpupin vcpu='2' cpuset='5'/>
+    <vcpupin vcpu='3' cpuset='21'/>
+    <vcpupin vcpu='4' cpuset='6'/>
+    <vcpupin vcpu='5' cpuset='22'/>
+    <vcpupin vcpu='6' cpuset='7'/>
+    <vcpupin vcpu='7' cpuset='23'/>
   </cputune>
   <numatune>
-    <memory mode='preferred' nodeset='1'/>
+    <memory mode='preferred' nodeset='0'/>
   </numatune>
   <resource>
     <partition>/machine</partition>
