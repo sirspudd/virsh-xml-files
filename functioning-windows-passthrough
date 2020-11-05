@@ -28,27 +28,31 @@
   </os>
   <features>
     <acpi/>
-    <apic eoi='on'/>
-    <hap state='on'/>
     <hyperv>
       <relaxed state='on'/>
       <vapic state='on'/>
+      <spinlocks state='on' retries='8191'/>
       <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
       <vendor_id state='on' value='banana'/>
+      <frequencies state='on'/>
+      <reenlightenment state='on'/>
+      <tlbflush state='on'/>
     </hyperv>
     <kvm>
       <hidden state='on'/>
     </kvm>
     <vmport state='off'/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='on'>
+  <cpu mode='host-passthrough' check='none' migratable='off'>
     <topology sockets='1' dies='1' cores='4' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='disable' name='svm'/>
     <feature policy='disable' name='x2apic'/>
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='invtsc'/>
-    <feature policy='disable' name='monitor'/>
   </cpu>
   <clock offset='utc'>
     <timer name='pit' tickpolicy='discard'/>
