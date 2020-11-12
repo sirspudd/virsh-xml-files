@@ -1,4 +1,4 @@
-<domain type='kvm' id='1'>
+<domain type='kvm' id='2'>
   <name>Cloudron</name>
   <uuid>75d0082b-ec87-4eca-bea2-6ce79e9b6313</uuid>
   <metadata>
@@ -8,17 +8,7 @@
   </metadata>
   <memory unit='KiB'>4194304</memory>
   <currentMemory unit='KiB'>4194304</currentMemory>
-  <vcpu placement='static' cpuset='12-13,28-29'>4</vcpu>
-  <cputune>
-    <vcpupin vcpu='0' cpuset='12'/>
-    <vcpupin vcpu='1' cpuset='28'/>
-    <vcpupin vcpu='2' cpuset='13'/>
-    <vcpupin vcpu='3' cpuset='29'/>
-    <emulatorpin cpuset='14,30'/>
-  </cputune>
-  <numatune>
-    <memory mode='preferred' nodeset='1'/>
-  </numatune>
+  <vcpu placement='static'>4</vcpu>
   <resource>
     <partition>/machine</partition>
   </resource>
@@ -33,25 +23,26 @@
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
+      <vendor_id state='on' value='banana'/>
+      <frequencies state='on'/>
+      <reenlightenment state='on'/>
+      <tlbflush state='on'/>
     </hyperv>
     <vmport state='off'/>
   </features>
-  <cpu mode='custom' match='exact' check='full'>
-    <model fallback='forbid'>EPYC</model>
-    <topology sockets='1' dies='1' cores='2' threads='2'/>
-    <feature policy='require' name='topoext'/>
-    <feature policy='require' name='virt-ssbd'/>
-    <feature policy='require' name='invtsc'/>
-    <feature policy='disable' name='monitor'/>
-    <feature policy='require' name='x2apic'/>
-    <feature policy='require' name='hypervisor'/>
+  <cpu mode='host-passthrough' check='none' migratable='off'>
+    <cache mode='passthrough'/>
     <feature policy='disable' name='svm'/>
+    <feature policy='disable' name='x2apic'/>
+    <feature policy='require' name='topoext'/>
+    <feature policy='require' name='invtsc'/>
   </cpu>
-  <clock offset='localtime'>
-    <timer name='rtc' present='no' tickpolicy='catchup'/>
-    <timer name='pit' present='no' tickpolicy='delay'/>
-    <timer name='hpet' present='no'/>
-    <timer name='kvmclock' present='no'/>
+  <clock offset='utc'>
+    <timer name='pit' tickpolicy='discard'/>
     <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -152,19 +143,19 @@
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/0'/>
+      <source path='/dev/pts/1'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/0'>
-      <source path='/dev/pts/0'/>
+    <console type='pty' tty='/dev/pts/1'>
+      <source path='/dev/pts/1'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-Cloudron/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-Cloudron/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
@@ -209,8 +200,8 @@
     </rng>
   </devices>
   <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+1000:+1000</label>
-    <imagelabel>+1000:+1000</imagelabel>
+    <label>+60511:+65534</label>
+    <imagelabel>+60511:+65534</imagelabel>
   </seclabel>
 </domain>
 

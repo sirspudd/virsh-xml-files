@@ -1,4 +1,4 @@
-<domain type='kvm' id='2'>
+<domain type='kvm' id='1'>
   <name>vpnwalker</name>
   <uuid>7236d324-37c8-443c-a983-de90fb33b494</uuid>
   <metadata>
@@ -6,16 +6,9 @@
       <libosinfo:os id="http://ubuntu.com/ubuntu/18.04"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>4194304</memory>
-  <currentMemory unit='KiB'>4194304</currentMemory>
-  <vcpu placement='static' cpuset='7,23'>2</vcpu>
-  <cputune>
-    <vcpupin vcpu='0' cpuset='7'/>
-    <vcpupin vcpu='1' cpuset='23'/>
-  </cputune>
-  <numatune>
-    <memory mode='preferred' nodeset='0'/>
-  </numatune>
+  <memory unit='KiB'>2097152</memory>
+  <currentMemory unit='KiB'>2097152</currentMemory>
+  <vcpu placement='static'>4</vcpu>
   <resource>
     <partition>/machine</partition>
   </resource>
@@ -32,36 +25,26 @@
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
+      <vpindex state='on'/>
+      <synic state='on'/>
+      <stimer state='on'/>
+      <reset state='on'/>
+      <vendor_id state='on' value='banana'/>
+      <frequencies state='on'/>
+      <reenlightenment state='on'/>
+      <tlbflush state='on'/>
     </hyperv>
     <vmport state='off'/>
   </features>
-  <cpu mode='custom' match='exact' check='full'>
-    <model fallback='forbid'>EPYC-IBPB</model>
-    <vendor>AMD</vendor>
-    <feature policy='require' name='x2apic'/>
-    <feature policy='require' name='tsc-deadline'/>
-    <feature policy='require' name='hypervisor'/>
-    <feature policy='require' name='tsc_adjust'/>
-    <feature policy='require' name='arch-capabilities'/>
-    <feature policy='require' name='xsaves'/>
-    <feature policy='require' name='cmp_legacy'/>
-    <feature policy='require' name='perfctr_core'/>
-    <feature policy='require' name='clzero'/>
-    <feature policy='require' name='virt-ssbd'/>
-    <feature policy='require' name='rdctl-no'/>
-    <feature policy='require' name='skip-l1dfl-vmentry'/>
-    <feature policy='require' name='mds-no'/>
-    <feature policy='require' name='pschange-mc-no'/>
-    <feature policy='disable' name='monitor'/>
-    <feature policy='require' name='invtsc'/>
+  <cpu mode='host-passthrough' check='none' migratable='off'>
+    <cache mode='passthrough'/>
     <feature policy='disable' name='svm'/>
+    <feature policy='disable' name='x2apic'/>
     <feature policy='require' name='topoext'/>
+    <feature policy='require' name='invtsc'/>
   </cpu>
-  <clock offset='localtime'>
-    <timer name='rtc' present='no' tickpolicy='catchup'/>
-    <timer name='pit' present='no' tickpolicy='delay'/>
-    <timer name='hpet' present='no'/>
-    <timer name='kvmclock' present='no'/>
+  <clock offset='utc'>
+    <timer name='pit' tickpolicy='discard'/>
     <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -75,7 +58,7 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/blackhole/img/vpnwalker.raw' index='1'/>
+      <source file='/mnt/vms/vpnwalker.raw' index='1'/>
       <backingStore/>
       <target dev='vda' bus='virtio'/>
       <alias name='virtio-disk0'/>
@@ -155,32 +138,32 @@
     </controller>
     <interface type='network'>
       <mac address='52:54:00:82:bd:01'/>
-      <source network='default' portid='2199dc69-ef61-4598-b5bd-46339fe956a8' bridge='virbr0'/>
+      <source network='default' portid='5c46ded9-1468-4ee9-b7c4-909199524c67' bridge='virbr0'/>
       <target dev='vnet0'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/1'/>
+      <source path='/dev/pts/0'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/1'>
-      <source path='/dev/pts/1'/>
+    <console type='pty' tty='/dev/pts/0'>
+      <source path='/dev/pts/0'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-vpnwalker/org.qemu.guest_agent.0'/>
-      <target type='virtio' name='org.qemu.guest_agent.0' state='disconnected'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-vpnwalker/org.qemu.guest_agent.0'/>
+      <target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <channel type='spicevmc'>
-      <target type='virtio' name='com.redhat.spice.0' state='disconnected'/>
+      <target type='virtio' name='com.redhat.spice.0' state='connected'/>
       <alias name='channel1'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
@@ -200,11 +183,11 @@
     </input>
     <graphics type='spice'>
       <listen type='none'/>
-      <gl enable='yes' rendernode='/dev/dri/renderD128'/>
+      <gl enable='no'/>
     </graphics>
     <video>
       <model type='virtio' heads='1' primary='yes'>
-        <acceleration accel3d='yes'/>
+        <acceleration accel3d='no'/>
       </model>
       <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
@@ -225,8 +208,8 @@
     </rng>
   </devices>
   <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+1000:+1000</label>
-    <imagelabel>+1000:+1000</imagelabel>
+    <label>+60511:+65534</label>
+    <imagelabel>+60511:+65534</imagelabel>
   </seclabel>
 </domain>
 
