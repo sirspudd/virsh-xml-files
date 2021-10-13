@@ -25,32 +25,26 @@
     <loader readonly='yes' type='pflash'>/usr/share/edk2-ovmf/x64/OVMF_CODE.fd</loader>
     <nvram>/usr/share/ovmf/x64/compromisedbeast.fd</nvram>
     <boot dev='hd'/>
+    <bootmenu enable='yes'/>
   </os>
   <features>
     <acpi/>
+    <apic/>
     <hyperv>
       <relaxed state='on'/>
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
       <vpindex state='on'/>
+      <runtime state='on'/>
       <synic state='on'/>
       <stimer state='on'/>
       <reset state='on'/>
-      <vendor_id state='on' value='banana'/>
-      <frequencies state='on'/>
-      <reenlightenment state='on'/>
-      <tlbflush state='on'/>
     </hyperv>
-    <kvm>
-      <hidden state='on'/>
-    </kvm>
-    <vmport state='off'/>
   </features>
   <cpu mode='host-passthrough' check='none' migratable='off'>
     <topology sockets='1' dies='1' cores='4' threads='2'/>
     <cache mode='passthrough'/>
     <feature policy='disable' name='svm'/>
-    <feature policy='disable' name='x2apic'/>
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='invtsc'/>
   </cpu>
@@ -146,41 +140,24 @@
       <alias name='pci.12'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x4'/>
     </controller>
+    <controller type='pci' index='13' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='13' port='0xd'/>
+      <alias name='pci.13'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x5'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-ehci1'>
-      <alias name='usb'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x7'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci1'>
-      <alias name='usb'/>
-      <master startport='0'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x0' multifunction='on'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci2'>
-      <alias name='usb'/>
-      <master startport='2'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x1'/>
-    </controller>
-    <controller type='usb' index='0' model='ich9-uhci3'>
-      <alias name='usb'/>
-      <master startport='4'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x2'/>
     </controller>
     <controller type='scsi' index='0' model='virtio-scsi'>
       <alias name='scsi0'/>
       <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
     </controller>
-    <interface type='direct'>
-      <mac address='52:54:00:16:c8:02'/>
-      <source dev='enp5s0' mode='bridge'/>
-      <target dev='macvtap1'/>
-      <model type='virtio'/>
-      <alias name='net0'/>
+    <controller type='usb' index='0' model='qemu-xhci' ports='15'>
+      <alias name='usb'/>
       <address type='pci' domain='0x0000' bus='0x0c' slot='0x00' function='0x0'/>
-    </interface>
+    </controller>
     <input type='mouse' bus='virtio'>
       <alias name='input0'/>
       <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
@@ -195,10 +172,7 @@
     <input type='keyboard' bus='ps2'>
       <alias name='input3'/>
     </input>
-    <sound model='ich9'>
-      <alias name='sound0'/>
-      <address type='pci' domain='0x0000' bus='0x00' slot='0x1b' function='0x0'/>
-    </sound>
+    <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
@@ -226,17 +200,9 @@
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
-        <address domain='0x0000' bus='0x44' slot='0x00' function='0x0'/>
-      </source>
-      <alias name='hostdev3'/>
-      <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
-    </hostdev>
-    <hostdev mode='subsystem' type='pci' managed='yes'>
-      <driver name='vfio'/>
-      <source>
         <address domain='0x0000' bus='0x42' slot='0x00' function='0x0'/>
       </source>
-      <alias name='hostdev4'/>
+      <alias name='hostdev3'/>
       <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </hostdev>
     <memballoon model='none'/>
@@ -249,7 +215,7 @@
     <qemu:arg value='-object'/>
     <qemu:arg value='input-linux,id=mouse1,evdev=/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse'/>
     <qemu:arg value='-object'/>
-    <qemu:arg value='input-linux,id=kbd1,evdev=/dev/input/by-id/usb-Metadot_-_Das_Keyboard_Das_Keyboard_Model_S-event-kbd,grab_all=on,repeat=on'/>
+    <qemu:arg value='input-linux,id=kbd1,evdev=/dev/input/by-id/usb-SONiX_USB_DEVICE-event-kbd,grab_all=on,repeat=on'/>
     <qemu:env name='QEMU_AUDIO_DRV' value='pa'/>
     <qemu:env name='QEMU_PA_SERVER' value='/run/user/60511/pulse/native'/>
   </qemu:commandline>
