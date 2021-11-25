@@ -1,47 +1,56 @@
-<domain type='kvm' id='1'>
+<domain type='kvm' id='2'>
   <name>vpnwalker</name>
-  <uuid>7236d324-37c8-443c-a983-de90fb33b494</uuid>
+  <uuid>b5267527-261d-4d3a-9d93-1dfda87c28db</uuid>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
-      <libosinfo:os id="http://ubuntu.com/ubuntu/18.04"/>
+      <libosinfo:os id="http://archlinux.org/archlinux/rolling"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>2097152</memory>
-  <currentMemory unit='KiB'>2097152</currentMemory>
-  <vcpu placement='static'>4</vcpu>
+  <memory unit='KiB'>3145728</memory>
+  <currentMemory unit='KiB'>3145728</currentMemory>
+  <memoryBacking>
+    <hugepages>
+      <page size='2048' unit='KiB'/>
+    </hugepages>
+    <access mode='shared'/>
+  </memoryBacking>
+  <vcpu placement='static'>1</vcpu>
   <resource>
     <partition>/machine</partition>
   </resource>
   <os>
     <type arch='x86_64' machine='pc-q35-4.1'>hvm</type>
     <loader readonly='yes' type='pflash'>/usr/share/edk2-ovmf/x64/OVMF_CODE.fd</loader>
-    <nvram>/usr/share/ovmf/x64/vpnwalker.fd</nvram>
+    <nvram>/usr/share/ovmf/x64/vpnwalker_VARS.fd</nvram>
     <boot dev='hd'/>
+    <bootmenu enable='yes'/>
   </os>
   <features>
     <acpi/>
     <apic/>
-    <hyperv>
-      <relaxed state='on'/>
-      <vapic state='on'/>
-      <spinlocks state='on' retries='8191'/>
-      <vpindex state='on'/>
-      <synic state='on'/>
-      <stimer state='on'/>
-      <reset state='on'/>
-      <vendor_id state='on' value='banana'/>
-      <frequencies state='on'/>
-      <reenlightenment state='on'/>
-      <tlbflush state='on'/>
-    </hyperv>
-    <vmport state='off'/>
   </features>
-  <cpu mode='host-passthrough' check='none' migratable='off'>
-    <cache mode='passthrough'/>
-    <feature policy='disable' name='svm'/>
+  <cpu mode='custom' match='exact' check='full'>
+    <model fallback='forbid'>EPYC-IBPB</model>
+    <vendor>AMD</vendor>
+    <cache level='3' mode='emulate'/>
     <feature policy='disable' name='x2apic'/>
+    <feature policy='require' name='tsc-deadline'/>
+    <feature policy='require' name='hypervisor'/>
+    <feature policy='require' name='tsc_adjust'/>
+    <feature policy='require' name='arch-capabilities'/>
+    <feature policy='require' name='xsaves'/>
+    <feature policy='require' name='cmp_legacy'/>
+    <feature policy='require' name='perfctr_core'/>
+    <feature policy='require' name='clzero'/>
+    <feature policy='require' name='xsaveerptr'/>
+    <feature policy='require' name='virt-ssbd'/>
+    <feature policy='require' name='rdctl-no'/>
+    <feature policy='require' name='skip-l1dfl-vmentry'/>
+    <feature policy='require' name='mds-no'/>
+    <feature policy='require' name='pschange-mc-no'/>
+    <feature policy='disable' name='svm'/>
+    <feature policy='disable' name='monitor'/>
     <feature policy='require' name='topoext'/>
-    <feature policy='require' name='invtsc'/>
   </cpu>
   <clock offset='utc'>
     <timer name='pit' tickpolicy='discard'/>
@@ -58,11 +67,20 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/mnt/vms/vpnwalker.raw' index='1'/>
+      <source file='/mnt/vms/vpnwalker-os-arch.raw' index='2'/>
       <backingStore/>
-      <target dev='vda' bus='virtio'/>
-      <alias name='virtio-disk0'/>
-      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+      <target dev='sda' bus='sata'/>
+      <alias name='sata0-0-0'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='0'/>
+    </disk>
+    <disk type='file' device='cdrom'>
+      <driver name='qemu' type='raw'/>
+      <source file='/blackhole/downloads/archlinux-2021.11.01-x86_64.iso' index='1'/>
+      <backingStore/>
+      <target dev='sdb' bus='sata'/>
+      <readonly/>
+      <alias name='sata0-0-1'/>
+      <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
     <controller type='usb' index='0' model='ich9-ehci1'>
       <alias name='usb'/>
@@ -136,28 +154,48 @@
       <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
+    <controller type='scsi' index='0' model='virtio-scsi'>
+      <alias name='scsi0'/>
+      <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
+    </controller>
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <binary path='/usr/lib/qemu/virtiofsd'/>
+      <source dir='/blackhole/var-cache-pacman-pkg'/>
+      <target dir='/var/cache/pacman/pkg'/>
+      <alias name='fs0'/>
+      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+    </filesystem>
+    <filesystem type='mount' accessmode='passthrough'>
+      <driver type='virtiofs'/>
+      <binary path='/usr/lib/qemu/virtiofsd'/>
+      <source dir='/blackhole/vpnspace'/>
+      <target dir='/mnt/downloads'/>
+      <alias name='fs1'/>
+      <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
+    </filesystem>
     <interface type='network'>
-      <mac address='52:54:00:82:bd:01'/>
-      <source network='default' portid='5c46ded9-1468-4ee9-b7c4-909199524c67' bridge='virbr0'/>
+      <mac address='52:54:00:95:40:c9'/>
+      <source network='default' portid='334bbb58-dead-4fa9-8476-130a44b398fd' bridge='virbr0'/>
       <target dev='vnet0'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/0'/>
+      <source path='/dev/pts/1'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/0'>
-      <source path='/dev/pts/0'/>
+    <console type='pty' tty='/dev/pts/1'>
+      <source path='/dev/pts/1'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-1-vpnwalker/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-vpnwalker/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
@@ -167,27 +205,24 @@
       <alias name='channel1'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
-    <input type='tablet' bus='usb'>
-      <alias name='input0'/>
-      <address type='usb' bus='0' port='1'/>
-    </input>
     <input type='mouse' bus='ps2'>
-      <alias name='input1'/>
+      <alias name='input0'/>
     </input>
     <input type='keyboard' bus='ps2'>
-      <alias name='input2'/>
+      <alias name='input1'/>
     </input>
     <input type='keyboard' bus='virtio'>
-      <alias name='input3'/>
+      <alias name='input2'/>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </input>
     <graphics type='spice'>
       <listen type='none'/>
-      <gl enable='no'/>
+      <gl enable='yes' rendernode='/dev/dri/by-path/pci-0000:43:00.0-render'/>
     </graphics>
+    <audio id='1' type='spice'/>
     <video>
       <model type='virtio' heads='1' primary='yes'>
-        <acceleration accel3d='no'/>
+        <acceleration accel3d='yes'/>
       </model>
       <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
