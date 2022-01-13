@@ -1,4 +1,4 @@
-<domain type='kvm' id='2'>
+<domain type='kvm'>
   <name>vpnwalker</name>
   <uuid>b5267527-261d-4d3a-9d93-1dfda87c28db</uuid>
   <metadata>
@@ -29,31 +29,18 @@
     <acpi/>
     <apic/>
   </features>
-  <cpu mode='custom' match='exact' check='full'>
-    <model fallback='forbid'>EPYC-IBPB</model>
-    <vendor>AMD</vendor>
+  <cpu mode='custom' match='exact' check='none'>
+    <model fallback='allow'>EPYC</model>
     <cache level='3' mode='emulate'/>
     <feature policy='disable' name='x2apic'/>
-    <feature policy='require' name='tsc-deadline'/>
-    <feature policy='require' name='hypervisor'/>
-    <feature policy='require' name='tsc_adjust'/>
-    <feature policy='require' name='arch-capabilities'/>
-    <feature policy='require' name='xsaves'/>
-    <feature policy='require' name='cmp_legacy'/>
-    <feature policy='require' name='perfctr_core'/>
-    <feature policy='require' name='clzero'/>
-    <feature policy='require' name='xsaveerptr'/>
-    <feature policy='require' name='virt-ssbd'/>
-    <feature policy='require' name='rdctl-no'/>
-    <feature policy='require' name='skip-l1dfl-vmentry'/>
-    <feature policy='require' name='mds-no'/>
-    <feature policy='require' name='pschange-mc-no'/>
     <feature policy='disable' name='svm'/>
-    <feature policy='disable' name='monitor'/>
-    <feature policy='require' name='topoext'/>
+    <feature policy='require' name='invtsc'/>
   </cpu>
-  <clock offset='utc'>
-    <timer name='pit' tickpolicy='discard'/>
+  <clock offset='localtime'>
+    <timer name='rtc' present='no' tickpolicy='catchup'/>
+    <timer name='pit' present='no' tickpolicy='delay'/>
+    <timer name='hpet' present='no'/>
+    <timer name='kvmclock' present='no'/>
     <timer name='hypervclock' present='yes'/>
   </clock>
   <on_poweroff>destroy</on_poweroff>
@@ -67,152 +54,114 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/mnt/vms/vpnwalker-os-arch.raw' index='2'/>
-      <backingStore/>
+      <source file='/mnt/vms/vpnwalker-os-arch.raw'/>
       <target dev='sda' bus='sata'/>
-      <alias name='sata0-0-0'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
     <disk type='file' device='cdrom'>
       <driver name='qemu' type='raw'/>
-      <source file='/blackhole/downloads/archlinux-2021.11.01-x86_64.iso' index='1'/>
-      <backingStore/>
+      <source file='/blackhole/downloads/archlinux-2021.11.01-x86_64.iso'/>
       <target dev='sdb' bus='sata'/>
       <readonly/>
-      <alias name='sata0-0-1'/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
     <controller type='usb' index='0' model='ich9-ehci1'>
-      <alias name='usb'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x7'/>
     </controller>
     <controller type='usb' index='0' model='ich9-uhci1'>
-      <alias name='usb'/>
       <master startport='0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x0' multifunction='on'/>
     </controller>
     <controller type='usb' index='0' model='ich9-uhci2'>
-      <alias name='usb'/>
       <master startport='2'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x1'/>
     </controller>
     <controller type='usb' index='0' model='ich9-uhci3'>
-      <alias name='usb'/>
       <master startport='4'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1d' function='0x2'/>
     </controller>
     <controller type='sata' index='0'>
-      <alias name='ide'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
     </controller>
-    <controller type='pci' index='0' model='pcie-root'>
-      <alias name='pcie.0'/>
-    </controller>
+    <controller type='pci' index='0' model='pcie-root'/>
     <controller type='pci' index='1' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='1' port='0x10'/>
-      <alias name='pci.1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' multifunction='on'/>
     </controller>
     <controller type='pci' index='2' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='2' port='0x11'/>
-      <alias name='pci.2'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x1'/>
     </controller>
     <controller type='pci' index='3' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='3' port='0x12'/>
-      <alias name='pci.3'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x2'/>
     </controller>
     <controller type='pci' index='4' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='4' port='0x13'/>
-      <alias name='pci.4'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x3'/>
     </controller>
     <controller type='pci' index='5' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='5' port='0x14'/>
-      <alias name='pci.5'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x4'/>
     </controller>
     <controller type='pci' index='6' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='6' port='0x15'/>
-      <alias name='pci.6'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x5'/>
     </controller>
     <controller type='pci' index='7' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='7' port='0x16'/>
-      <alias name='pci.7'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x6'/>
     </controller>
     <controller type='virtio-serial' index='0'>
-      <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </controller>
     <controller type='scsi' index='0' model='virtio-scsi'>
-      <alias name='scsi0'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </controller>
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
-      <binary path='/usr/lib/qemu/virtiofsd'/>
       <source dir='/blackhole/var-cache-pacman-pkg'/>
       <target dir='/var/cache/pacman/pkg'/>
-      <alias name='fs0'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </filesystem>
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
-      <binary path='/usr/lib/qemu/virtiofsd'/>
       <source dir='/blackhole/vpnspace'/>
       <target dir='/mnt/downloads'/>
-      <alias name='fs1'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </filesystem>
     <interface type='network'>
       <mac address='52:54:00:95:40:c9'/>
-      <source network='default' portid='334bbb58-dead-4fa9-8476-130a44b398fd' bridge='virbr0'/>
-      <target dev='vnet0'/>
+      <source network='default'/>
       <model type='virtio'/>
-      <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/1'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
-      <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/1'>
-      <source path='/dev/pts/1'/>
+    <console type='pty'>
       <target type='serial' port='0'/>
-      <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-vpnwalker/org.qemu.guest_agent.0'/>
-      <target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
-      <alias name='channel0'/>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <channel type='spicevmc'>
-      <target type='virtio' name='com.redhat.spice.0' state='connected'/>
-      <alias name='channel1'/>
+      <target type='virtio' name='com.redhat.spice.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
-    <input type='mouse' bus='ps2'>
-      <alias name='input0'/>
-    </input>
-    <input type='keyboard' bus='ps2'>
-      <alias name='input1'/>
-    </input>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
     <input type='keyboard' bus='virtio'>
-      <alias name='input2'/>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </input>
     <graphics type='spice'>
@@ -224,27 +173,20 @@
       <model type='virtio' heads='1' primary='yes'>
         <acceleration accel3d='yes'/>
       </model>
-      <alias name='video0'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0'/>
     </video>
     <redirdev bus='usb' type='spicevmc'>
-      <alias name='redir0'/>
       <address type='usb' bus='0' port='2'/>
     </redirdev>
     <redirdev bus='usb' type='spicevmc'>
-      <alias name='redir1'/>
       <address type='usb' bus='0' port='3'/>
     </redirdev>
     <memballoon model='none'/>
     <rng model='virtio'>
       <backend model='random'>/dev/urandom</backend>
-      <alias name='rng0'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </rng>
   </devices>
-  <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+60511:+65534</label>
-    <imagelabel>+60511:+65534</imagelabel>
-  </seclabel>
+  <seclabel type='dynamic' model='dac' relabel='yes'/>
 </domain>
 
