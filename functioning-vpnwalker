@@ -1,4 +1,4 @@
-<domain type='kvm' id='2'>
+<domain type='kvm' id='1'>
   <name>vpnwalker</name>
   <uuid>b5267527-261d-4d3a-9d93-1dfda87c28db</uuid>
   <metadata>
@@ -9,6 +9,7 @@
   <memory unit='KiB'>4194304</memory>
   <currentMemory unit='KiB'>4194304</currentMemory>
   <memoryBacking>
+    <source type='memfd'/>
     <access mode='shared'/>
   </memoryBacking>
   <vcpu placement='static'>1</vcpu>
@@ -140,42 +141,34 @@
     </controller>
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
-      <binary path='/usr/lib/qemu/virtiofsd'/>
-      <source dir='/blackhole/arch/var-cache-pacman'/>
-      <target dir='/var/cache/pacman/pkg'/>
-      <alias name='fs0'/>
-      <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
-    </filesystem>
-    <filesystem type='mount' accessmode='passthrough'>
-      <driver type='virtiofs'/>
-      <binary path='/usr/lib/qemu/virtiofsd'/>
+      <binary path='/usr/lib/virtiofsd'/>
       <source dir='/blackhole/vpnspace'/>
       <target dir='/mnt/downloads'/>
-      <alias name='fs1'/>
+      <alias name='fs0'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </filesystem>
     <interface type='network'>
       <mac address='52:54:00:95:40:c9'/>
-      <source network='default' portid='906fa36d-6076-4e46-ad2f-abd368a9e471' bridge='virbr0'/>
+      <source network='default' portid='f826e2a3-ba54-4aa2-962f-df6a5cc8ce14' bridge='virbr0'/>
       <target dev='vnet0'/>
       <model type='virtio'/>
       <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </interface>
     <serial type='pty'>
-      <source path='/dev/pts/2'/>
+      <source path='/dev/pts/0'/>
       <target type='isa-serial' port='0'>
         <model name='isa-serial'/>
       </target>
       <alias name='serial0'/>
     </serial>
-    <console type='pty' tty='/dev/pts/2'>
-      <source path='/dev/pts/2'/>
+    <console type='pty' tty='/dev/pts/0'>
+      <source path='/dev/pts/0'/>
       <target type='serial' port='0'/>
       <alias name='serial0'/>
     </console>
     <channel type='unix'>
-      <source mode='bind' path='/var/lib/libvirt/qemu/channel/target/domain-2-vpnwalker/org.qemu.guest_agent.0'/>
+      <source mode='bind' path='/run/libvirt/qemu/channel/1-vpnwalker/org.qemu.guest_agent.0'/>
       <target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
       <alias name='channel0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
@@ -197,7 +190,7 @@
     </input>
     <graphics type='spice'>
       <listen type='none'/>
-      <gl enable='yes' rendernode='/dev/dri/by-path/pci-0000:03:00.0-render'/>
+      <gl enable='yes' rendernode='/dev/dri/by-path/pci-0000:13:00.0-render'/>
     </graphics>
     <audio id='1' type='spice'/>
     <video>
@@ -226,8 +219,8 @@
     </rng>
   </devices>
   <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+963:+963</label>
-    <imagelabel>+963:+963</imagelabel>
+    <label>+1000:+963</label>
+    <imagelabel>+1000:+963</imagelabel>
   </seclabel>
 </domain>
 
