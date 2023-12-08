@@ -1,4 +1,4 @@
-<domain type='kvm' id='12'>
+<domain type='kvm'>
   <name>gpu-llama</name>
   <uuid>67e6f013-1116-478e-bd72-ee3aaec0dd07</uuid>
   <metadata>
@@ -67,110 +67,89 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw' io='io_uring'/>
-      <source file='/opt/vms/gpu-arch.raw' index='2'/>
+      <source file='/opt/vms/gpu-arch.raw'/>
       <backingStore/>
       <target dev='sda' bus='sata'/>
       <boot order='2'/>
-      <alias name='sata0-0-0'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/blackhole/torrent/archlinux-2023.12.01-x86_64.iso' index='1'/>
-      <backingStore/>
+      <source file='/blackhole/torrent/archlinux-2023.12.01-x86_64.iso'/>
       <target dev='sdb' bus='sata'/>
       <boot order='1'/>
-      <alias name='sata0-0-1'/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
     <controller type='usb' index='0' model='qemu-xhci'>
-      <alias name='usb'/>
       <address type='pci' domain='0x0000' bus='0x01' slot='0x00' function='0x0'/>
     </controller>
     <controller type='sata' index='0'>
-      <alias name='ide'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x1f' function='0x2'/>
     </controller>
-    <controller type='pci' index='0' model='pcie-root'>
-      <alias name='pcie.0'/>
-    </controller>
+    <controller type='pci' index='0' model='pcie-root'/>
     <controller type='pci' index='1' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='1' port='0x8'/>
-      <alias name='pci.1'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x0' multifunction='on'/>
     </controller>
     <controller type='pci' index='2' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='2' port='0x9'/>
-      <alias name='pci.2'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x1'/>
     </controller>
     <controller type='pci' index='3' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='3' port='0xa'/>
-      <alias name='pci.3'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x2'/>
     </controller>
     <controller type='pci' index='4' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='4' port='0xb'/>
-      <alias name='pci.4'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x3'/>
     </controller>
     <controller type='pci' index='5' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='5' port='0xc'/>
-      <alias name='pci.5'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x4'/>
     </controller>
     <controller type='pci' index='6' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='6' port='0xd'/>
-      <alias name='pci.6'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x5'/>
     </controller>
     <controller type='pci' index='7' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='7' port='0xe'/>
-      <alias name='pci.7'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x6'/>
     </controller>
     <controller type='pci' index='8' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='8' port='0xf'/>
-      <alias name='pci.8'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x01' function='0x7'/>
     </controller>
     <controller type='pci' index='9' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='9' port='0x10'/>
-      <alias name='pci.9'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x0' multifunction='on'/>
     </controller>
     <controller type='pci' index='10' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='10' port='0x11'/>
-      <alias name='pci.10'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x1'/>
     </controller>
     <controller type='pci' index='11' model='pcie-root-port'>
       <model name='pcie-root-port'/>
       <target chassis='11' port='0x12'/>
-      <alias name='pci.11'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x2'/>
     </controller>
     <controller type='pci' index='12' model='pcie-to-pci-bridge'>
       <model name='pcie-pci-bridge'/>
-      <alias name='pci.12'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
     <controller type='virtio-serial' index='0'>
-      <alias name='virtio-serial0'/>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </controller>
     <controller type='scsi' index='0' model='virtio-scsi'>
-      <alias name='scsi0'/>
       <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
     </controller>
     <filesystem type='mount' accessmode='passthrough'>
@@ -178,44 +157,38 @@
       <binary path='/usr/lib/virtiofsd'/>
       <source dir='/opt'/>
       <target dir='/opt'/>
-      <alias name='fs0'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </filesystem>
     <interface type='network'>
       <mac address='52:54:00:23:be:49'/>
-      <source network='default' portid='bb9ff0c9-db4a-42c7-8181-d207c02c76f2' bridge='virbr0'/>
-      <target dev='vnet10'/>
+      <source network='default'/>
       <model type='virtio'/>
-      <alias name='net0'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </interface>
     <channel type='qemu-vdagent'>
       <source>
         <clipboard copypaste='yes'/>
       </source>
-      <target type='virtio' name='com.redhat.spice.0' state='disconnected'/>
-      <alias name='channel0'/>
+      <target type='virtio' name='com.redhat.spice.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='1'/>
     </channel>
     <channel type='pty'>
-      <source path='/dev/pts/6'/>
-      <target type='virtio' name='org.qemu.guest_agent.0' state='connected'/>
-      <alias name='channel1'/>
+      <target type='virtio' name='org.qemu.guest_agent.0'/>
       <address type='virtio-serial' controller='0' bus='0' port='2'/>
     </channel>
     <input type='evdev'>
       <source dev='/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse'/>
-      <alias name='input0'/>
     </input>
     <input type='evdev'>
       <source dev='/dev/input/by-id/usb-Metadot_-_Das_Keyboard_Das_Keyboard_Model_S-event-kbd' grab='all' repeat='on'/>
-      <alias name='input1'/>
     </input>
-    <input type='mouse' bus='ps2'>
-      <alias name='input2'/>
+    <input type='mouse' bus='ps2'/>
+    <input type='keyboard' bus='ps2'/>
+    <input type='mouse' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
     </input>
-    <input type='keyboard' bus='ps2'>
-      <alias name='input3'/>
+    <input type='keyboard' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x0a' slot='0x00' function='0x0'/>
     </input>
     <audio id='1' type='none'/>
     <hostdev mode='subsystem' type='pci' managed='yes'>
@@ -223,7 +196,6 @@
       <source>
         <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
       </source>
-      <alias name='hostdev0'/>
       <rom bar='on' file='/opt/passthrough/Navi31.rom'/>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0' multifunction='on'/>
     </hostdev>
@@ -232,22 +204,15 @@
       <source>
         <address domain='0x0000' bus='0x03' slot='0x00' function='0x1'/>
       </source>
-      <alias name='hostdev1'/>
       <rom bar='on' file='/opt/passthrough/Navi31.rom'/>
       <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x1'/>
     </hostdev>
-    <watchdog model='itco' action='reset'>
-      <alias name='watchdog0'/>
-    </watchdog>
+    <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
-      <alias name='balloon0'/>
       <address type='pci' domain='0x0000' bus='0x05' slot='0x00' function='0x0'/>
     </memballoon>
   </devices>
   <seclabel type='none' model='none'/>
-  <seclabel type='dynamic' model='dac' relabel='yes'>
-    <label>+1000:+963</label>
-    <imagelabel>+1000:+963</imagelabel>
-  </seclabel>
+  <seclabel type='dynamic' model='dac' relabel='yes'/>
 </domain>
 

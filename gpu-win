@@ -151,6 +151,12 @@
     </channel>
     <input type='mouse' bus='ps2'/>
     <input type='keyboard' bus='ps2'/>
+    <input type='mouse' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x08' slot='0x00' function='0x0'/>
+    </input>
+    <input type='keyboard' bus='virtio'>
+      <address type='pci' domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
+    </input>
     <input type='evdev'>
       <source dev='/dev/input/by-id/usb-Logitech_USB_Receiver-if02-event-mouse'/>
     </input>
