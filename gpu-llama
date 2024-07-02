@@ -6,8 +6,8 @@
       <libosinfo:os id="http://fedoraproject.org/fedora/38"/>
     </libosinfo:libosinfo>
   </metadata>
-  <memory unit='KiB'>33554432</memory>
-  <currentMemory unit='KiB'>33554432</currentMemory>
+  <memory unit='KiB'>16777216</memory>
+  <currentMemory unit='KiB'>16777216</currentMemory>
   <memoryBacking>
     <source type='memfd'/>
     <access mode='shared'/>
@@ -31,19 +31,24 @@
       <vapic state='on'/>
       <spinlocks state='on' retries='8191'/>
       <vpindex state='on'/>
+      <runtime state='on'/>
       <synic state='on'/>
-      <stimer state='on'/>
-      <reset state='on'/>
-      <vendor_id state='on' value='KVM Hv'/>
+      <stimer state='on'>
+        <direct state='on'/>
+      </stimer>
+      <reset state='off'/>
       <frequencies state='on'/>
+      <reenlightenment state='on'/>
+      <tlbflush state='on'/>
+      <ipi state='on'/>
+      <evmcs state='off'/>
     </hyperv>
     <vmport state='off'/>
   </features>
   <cpu mode='host-passthrough' check='full' migratable='on'>
-    <topology sockets='1' dies='1' cores='16' threads='2'/>
     <cache mode='passthrough'/>
-    <feature policy='require' name='invtsc'/>
     <feature policy='require' name='svm'/>
+    <feature policy='require' name='invtsc'/>
     <feature policy='require' name='apic'/>
     <feature policy='require' name='topoext'/>
     <feature policy='require' name='hypervisor'/>
@@ -67,17 +72,16 @@
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw' io='io_uring'/>
-      <source file='/opt/vms/gpu-arch.raw'/>
+      <source file='/opt/vms/gpu-fedora.raw'/>
       <backingStore/>
       <target dev='sda' bus='sata'/>
-      <boot order='2'/>
+      <boot order='1'/>
       <address type='drive' controller='0' bus='0' target='0' unit='0'/>
     </disk>
     <disk type='file' device='disk'>
-      <driver name='qemu' type='raw'/>
-      <source file='/blackhole/torrent/archlinux-2023.12.01-x86_64.iso'/>
+      <driver name='qemu' type='qcow2'/>
+      <source file='/opt/vms/gpu-llama-data.qcow2'/>
       <target dev='sdb' bus='sata'/>
-      <boot order='1'/>
       <address type='drive' controller='0' bus='0' target='0' unit='1'/>
     </disk>
     <controller type='usb' index='0' model='qemu-xhci'>
@@ -146,6 +150,11 @@
       <model name='pcie-pci-bridge'/>
       <address type='pci' domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
     </controller>
+    <controller type='pci' index='13' model='pcie-root-port'>
+      <model name='pcie-root-port'/>
+      <target chassis='13' port='0x13'/>
+      <address type='pci' domain='0x0000' bus='0x00' slot='0x02' function='0x3'/>
+    </controller>
     <controller type='virtio-serial' index='0'>
       <address type='pci' domain='0x0000' bus='0x06' slot='0x00' function='0x0'/>
     </controller>
@@ -155,13 +164,19 @@
     <filesystem type='mount' accessmode='passthrough'>
       <driver type='virtiofs'/>
       <binary path='/usr/lib/virtiofsd'/>
-      <source dir='/opt'/>
-      <target dir='/opt'/>
+      <source dir='/opt/ollama'/>
+      <target dir='/opt/ollama'/>
       <address type='pci' domain='0x0000' bus='0x07' slot='0x00' function='0x0'/>
     </filesystem>
     <interface type='network'>
-      <mac address='52:54:00:23:be:49'/>
+      <mac address='52:54:00:0c:87:0c'/>
       <source network='default'/>
+      <model type='virtio'/>
+      <address type='pci' domain='0x0000' bus='0x0d' slot='0x00' function='0x0'/>
+    </interface>
+    <interface type='direct'>
+      <mac address='52:54:00:93:90:29'/>
+      <source dev='enp12s0' mode='bridge'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x04' slot='0x00' function='0x0'/>
     </interface>
@@ -194,18 +209,18 @@
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
-        <address domain='0x0000' bus='0x03' slot='0x00' function='0x0'/>
+        <address domain='0x0000' bus='0x09' slot='0x00' function='0x0'/>
       </source>
-      <rom bar='on' file='/opt/passthrough/Navi31.rom'/>
-      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0' multifunction='on'/>
+      <rom bar='on' file='/opt/vms/passthrough/AMD.RadeonVII.16384.190211.rom'/>
+      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x0'/>
     </hostdev>
     <hostdev mode='subsystem' type='pci' managed='yes'>
       <driver name='vfio'/>
       <source>
-        <address domain='0x0000' bus='0x03' slot='0x00' function='0x1'/>
+        <address domain='0x0000' bus='0x09' slot='0x00' function='0x1'/>
       </source>
-      <rom bar='on' file='/opt/passthrough/Navi31.rom'/>
-      <address type='pci' domain='0x0000' bus='0x02' slot='0x00' function='0x1'/>
+      <rom bar='on' file='/opt/vms/passthrough/AMD.RadeonVII.16384.190211.rom'/>
+      <address type='pci' domain='0x0000' bus='0x0b' slot='0x00' function='0x0'/>
     </hostdev>
     <watchdog model='itco' action='reset'/>
     <memballoon model='virtio'>
